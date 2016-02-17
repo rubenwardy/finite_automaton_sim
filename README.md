@@ -8,9 +8,9 @@ License: LGPL 2.1 or later.
 ## API Example
 
 ```Javascript
+const assert = require('assert');
 var Machine = require('./machine');
 var Simulator = require('./simulator');
-
 
 // DFA to accept even number of "a"s
 var m = new Machine({a:true, b:true});
@@ -20,9 +20,9 @@ m.connect(0, 0, "b");
 m.connect(1, 1, "b");
 // implicit: m.makeInitial(0);
 m.makeAccept(1);
+assert(m.isValid()); // You should always check this
 
 // Test
-const assert = require('assert');
 assert(len(m.states) == 2);
 assert(!m.isAccept(m.states[0]));
 assert(m.isAccept(m.states[1]));
