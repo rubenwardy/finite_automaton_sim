@@ -1,0 +1,20 @@
+{
+  "name": "ndfa",
+  "version": "0.0.0",
+  "description": "Finite Automata",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "keywords": [
+    "cs",
+    "dfa",
+    "nfa"
+  ],
+  "author": "rubenwardy",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
