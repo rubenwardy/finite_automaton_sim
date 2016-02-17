@@ -190,31 +190,3 @@ describe("Simulator", function() {
 		});
 	});
 });
-
-
-
-
-
-//
-//
-// (function() {
-// 	console.log("Creating machine...");
-// 	var m = new Machine();
-// 	m.connect(0, 1, "a");
-// 	m.connect(1, 0, "a");
-// 	m.connect(0, 0, "b");
-// 	m.connect(1, 1, "b");
-// 	m.makeInitial(0);
-// 	m.makeAccept(1);
-//
-// 	assert(len(m.states) == 2);
-// 	assert(!m.isAccept(m.states[0]));
-// 	assert(m.isAccept(m.states[1]));
-//
-// 	var s = new Simulator(m);
-// 	assert(!s.isAccept());
-// 	s.step("a");
-// 	assert(s.isAccept());
-//
-// 	console.log("Done.");
-// })();
