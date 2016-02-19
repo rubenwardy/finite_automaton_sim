@@ -162,6 +162,25 @@ describe("Machine", function() {
 
 describe("Simulator", function() {
 	describe("DFA", function() {
+		it("should start in correct initial state", function() {
+			var m = new Machine({a:true, b:true});
+			m.connect(0, 1, "a");
+			m.connect(1, 0, "a");
+			m.connect(0, 0, "b");
+			m.connect(1, 1, "b");
+
+
+			var s = new Simulator(m);
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals(0);
+
+			m.makeInitial(1);
+
+			var s = new Simulator(m);
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals(1);
+		});
+
 		it("should recognise accept states", function() {
 			var m = new Machine({a:true, b:true});
 			m.connect(0, 1, "a");
@@ -172,11 +191,54 @@ describe("Simulator", function() {
 			m.makeAccept(0);
 			expect(s.isAccept()).is.true;
 		});
+
+		it("should tick correctly", function() {
+			var m = new Machine({a:true, b:true});
+			m.connect(0, 1, "a");
+			m.connect(1, 0, "a");
+			m.connect(0, 0, "b");
+			m.connect(1, 1, "b");
+			// implicit: m.makeInitial(0);
+			m.makeAccept(1);
+
+			var s = new Simulator(m);
+			expect(s.isAccept()).is.not.true;
+			s.step("a");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("1");
+			s.step("b");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("1");
+			s.step("b");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("1");
+			s.step("a");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("0");
+			s.step("b");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("0");
+			s.step("a");
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals("1");
+			expect(s.isAccept()).is.true;
+		});
 	});
 
-
 	describe("NFA", function() {
-		it("should recognise accept states", function() {
+		it("should start in correct initial states", function() {
+			var m = new Machine({a:true, b:true}, 2);
+			m.connect(0, 1, EPS);
+			m.connect(0, 2, EPS);
+
+			var s = new Simulator(m);
+			expect(s.states.length).to.equals(3);
+			expect(s.states[0]).to.equals(0);
+			expect(s.states[1]).to.equals(1);
+			expect(s.states[2]).to.equals(2);
+		});
+
+		it("should recognise accept states (no-epsilon)", function() {
 			var m = new Machine({a:true, b:true}, 2);
 			m.connect(0, 1, "a");
 			m.connect(0, 2, "a");
@@ -186,6 +248,24 @@ describe("Simulator", function() {
 			s.step("a");
 			expect(s.isAccept()).is.not.true;
 			m.makeAccept(2);
+			expect(s.isAccept()).is.true;
+		});
+
+		it("should work with epsilon jumps", function() {
+			var m = new Machine({a:true, b:true}, 2);
+			m.connect(0, 1, "a");
+			m.connect(1, 3, EPS);
+			m.connect(0, 2, "b");
+			m.makeAccept(3);
+
+			var s = new Simulator(m);
+			expect(s.states.length).to.equals(1);
+			expect(s.states[0]).to.equals(0);
+			expect(s.isAccept()).is.not.true;
+			s.step("a");
+			expect(s.states.length).to.equals(2);
+			expect(s.states[0]).to.equals("1");
+			expect(s.states[1]).to.equals("3");
 			expect(s.isAccept()).is.true;
 		});
 	});

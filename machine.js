@@ -71,7 +71,7 @@ Machine.prototype.isValid = function() {
 			if (!state.arcs.hasOwnProperty(alpha)) continue;
 
 			if (!this.isInAlpha(alpha) && (this.type != NFA || alpha != EPS)) {
-				console.log(alpha + " is not in alphabet!");
+				//console.log(alpha + " is not in alphabet!");
 				return false;
 			}
 		}
@@ -81,7 +81,7 @@ Machine.prototype.isValid = function() {
 				if (!this.alpha.hasOwnProperty(alpha)) continue;
 
 				if (!state.arcs[alpha]) {
-					console.log(alpha + " is in alphabet but is not an arc!");
+					//console.log(alpha + " is in alphabet but is not an arc!");
 					return false;
 				}
 			}
@@ -89,6 +89,16 @@ Machine.prototype.isValid = function() {
 	}
 
 	return true;
+}
+
+Machine.prototype.getReachableStates = function(state) {
+	var res = [state.id];
+	if (this.type == NFA && state.arcs[EPS]) {
+		for (var i = 0; i < state.arcs[EPS].length; i++) {
+			res.push(state.arcs[EPS][i]);
+		}
+	}
+	return res;
 }
 
 Machine.prototype.delta = function(state, alpha) {
@@ -103,7 +113,11 @@ Machine.prototype.delta = function(state, alpha) {
 		var res = [];
 		if (next) {
 			for (var i = 0; i < next.length; i++) {
-				res.push(next[i]);
+				var node = this.states[next[i]];
+				var reachable = this.getReachableStates(node);
+				for (var j = 0; j < reachable.length; j++) {
+					res.push(reachable[j]);
+				}
 			}
 		}
 
