@@ -22,6 +22,8 @@ Machine.prototype.isInAlpha = function(alpha) {
 }
 
 Machine.prototype.connect = function(from, to, alpha) {
+	from = String(from);
+	to = String(to);
 	// console.log("Conecting "  + from + " to " + to + " (given: " + alpha + ")");
 
 	var one = this.states[from];
@@ -46,11 +48,11 @@ Machine.prototype.connect = function(from, to, alpha) {
 }
 
 Machine.prototype.makeInitial = function(id) {
-	this.initial = id;
+	this.initial = String(id);
 }
 
 Machine.prototype.makeAccept = function(id) {
-	var state = this.states[id];
+	var state = this.states[String(id)];
 	state.accept = true;
 }
 

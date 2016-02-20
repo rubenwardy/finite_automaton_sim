@@ -39,7 +39,7 @@ describe("Machine", function() {
 		expect(len(two.arcs)).to.equal(0);
 		expect(one.arcs).to.have.property("a");
 		expect(one.arcs["a"].length).to.equal(1);
-		expect(one.arcs["a"][0]).to.equal(1);
+		expect(one.arcs["a"][0]).to.equal('1');
 	});
 
 	it("should recognise accept states", function() {
@@ -78,7 +78,7 @@ describe("Machine", function() {
 			expect(res).is.not.undefined;
 			expect(res).is.not.null;
 			expect(res.length).to.equal(1);
-			expect(res[0]).to.equal(1);
+			expect(res[0]).to.equal('1');
 		});
 	});
 
@@ -119,8 +119,8 @@ describe("Machine", function() {
 			expect(len(two.arcs)).to.equal(0);
 			expect(one.arcs).to.have.property("a");
 			expect(one.arcs["a"].length).to.equal(2);
-			expect(one.arcs["a"][0]).to.equal(0);
-			expect(one.arcs["a"][1]).to.equal(1);
+			expect(one.arcs["a"][0]).to.equal('0');
+			expect(one.arcs["a"][1]).to.equal('1');
 		});
 
 		it("should return next state", function() {
@@ -131,7 +131,7 @@ describe("Machine", function() {
 			expect(res).is.not.undefined;
 			expect(res).is.not.null;
 			expect(res.length).to.equal(1);
-			expect(res[0]).to.equal(1);
+			expect(res[0]).to.equal('1');
 		});
 
 		it("should return empty list on bad input", function() {
@@ -153,8 +153,8 @@ describe("Machine", function() {
 			expect(res).is.not.undefined;
 			expect(res).is.not.null;
 			expect(res.length).to.equal(2);
-			expect(res[0]).to.equal(0);
-			expect(res[1]).to.equal(1);
+			expect(res[0]).to.equal('0');
+			expect(res[1]).to.equal('1');
 		});
 	});
 });
@@ -172,13 +172,13 @@ describe("Simulator", function() {
 
 			var s = new Simulator(m);
 			expect(s.states.length).to.equals(1);
-			expect(s.states[0]).to.equals(0);
+			expect(s.states[0]).to.equal('0');
 
 			m.makeInitial(1);
 
 			var s = new Simulator(m);
 			expect(s.states.length).to.equals(1);
-			expect(s.states[0]).to.equals(1);
+			expect(s.states[0]).to.equal('1');
 		});
 
 		it("should recognise accept states", function() {
@@ -233,9 +233,9 @@ describe("Simulator", function() {
 
 			var s = new Simulator(m);
 			expect(s.states.length).to.equals(3);
-			expect(s.states[0]).to.equals(0);
-			expect(s.states[1]).to.equals(1);
-			expect(s.states[2]).to.equals(2);
+			expect(s.states[0]).to.equal('0');
+			expect(s.states[1]).to.equal('1');
+			expect(s.states[2]).to.equal('2');
 		});
 
 		it("should recognise accept states (no-epsilon)", function() {
@@ -260,7 +260,7 @@ describe("Simulator", function() {
 
 			var s = new Simulator(m);
 			expect(s.states.length).to.equals(1);
-			expect(s.states[0]).to.equals(0);
+			expect(s.states[0]).to.equal('0');
 			expect(s.isAccept()).is.not.true;
 			s.step("a");
 			expect(s.states.length).to.equals(2);
