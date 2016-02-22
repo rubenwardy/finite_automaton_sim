@@ -1,6 +1,7 @@
 # Finite Automaton Sim
 
-Simulates DFAs and NFAs in Node.
+Simulates DFAs and NFAs in Javascript.
+Can run both in NodeJS and in HTML5.
 
 Created by rubenwardy  
 License: LGPL 2.1 or later.
@@ -36,11 +37,15 @@ assert(s.isAccept());
 
 ## Command Line Usage (TODO)
 
+Whilst in ndfa folder:
+
 	nodejs .
 
 Then use the command prompt
 
 ## Tests
+
+Whilst in ndfa folder:
 
 	mocha
 
