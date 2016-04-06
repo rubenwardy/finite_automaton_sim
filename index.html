@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>DFA / NFA simulator</title>
+	<style>
+		html, body {
+			background: black;
+			margin: 0;
+			padding: 0;
+			font-family: "Arial", sans-serif;
+		}
+
+		#canvas {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+	</style>
+	<script src="libs/jQuery.min.js"></script>
+	<script src="libs/sh5cf.js"></script>
+	<script src="ndfa/machine.js"></script>
+	<script src="ndfa/simulator.js"></script>
+	<script src="player.js"></script>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+</html>
