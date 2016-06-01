@@ -183,6 +183,13 @@ function draw(ce, c) {
 		}
 	}
 
+	var start = idToPosition(game.m.getIdFromState(game.m.initial), num_states, mid, dist);
+	c.beginPath();
+	c.strokeStyle = "#ccc";
+	c.moveTo(start.x - 100, start.y);
+	c.lineTo(start.x, start.y);
+	c.stroke();
+
 	i = 0;
 	for (var key in game.m.states) {
 		if (game.m.states.hasOwnProperty(key)) {
