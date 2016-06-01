@@ -178,8 +178,17 @@ function draw(ce, c) {
 		if (game.m.states.hasOwnProperty(key)) {
 			var pos = idToPosition(i, num_states, mid, dist);
 			var state = game.m.states[key];
-			drawState(key, pos, state.accept);
 			drawArcsFromState(state, pos);
+			i++;
+		}
+	}
+
+	i = 0;
+	for (var key in game.m.states) {
+		if (game.m.states.hasOwnProperty(key)) {
+			var pos = idToPosition(i, num_states, mid, dist);
+			var state = game.m.states[key];
+			drawState(key, pos, state.accept);
 			i++;
 		}
 	}
