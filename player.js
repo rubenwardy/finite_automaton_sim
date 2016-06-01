@@ -75,8 +75,6 @@ function idToPosition(i, num_states, mid, dist) {
 }
 
 function draw(ce, c) {
-	engine.draw_fps();
-
 	const mid = {
 		x: ce.width / 2,
 		y: ce.height / 2
