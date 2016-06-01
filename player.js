@@ -5,6 +5,7 @@ function init() {
 	console.log("[Player] Init!");
 
 	game.input = ['a', 'b', 'a', 'a', 'a', 'b', 'a', 'a'];
+	game.title = "DFA to accept strings ending in aa";
 	game.m = new Machine({a: true, b: true});
 	game.m.connect(0, 1, "a");
 	game.m.connect(1, 2, "a");
@@ -26,6 +27,7 @@ function init() {
 }
 
 function start() {
+	$("#title").text(game.title);
 	var res = "";
 	for (var i = 0; i < game.input.length; i++) {
 		res += "<li>" + game.input[i] + "</li>";

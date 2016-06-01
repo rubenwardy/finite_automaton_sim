@@ -9,6 +9,7 @@
 			margin: 0;
 			padding: 0;
 			font-family: "Arial", sans-serif;
+			color: white;
 		}
 
 		#canvas {
@@ -42,11 +43,22 @@
 			display: inline-block;
 			padding: 10px;
 			font-size: 180%;
-			color: white;
 		}
 
 		#input .done {
 			color: #666;
+		}
+
+		#title {
+			margin: 0;
+			padding: 0;
+			position: fixed;
+			top: 20px;
+			left: 0;
+			right: 0;
+			text-align: center;
+			font-size: 150%;
+			display: block;
 		}
 	</style>
 	<script src="libs/jQuery.min.js"></script>
@@ -56,6 +68,7 @@
 	<script src="player.js"></script>
 </head>
 <body>
+	<h1 id="title">Loading...</h1>
 	<canvas id="canvas"></canvas>
 	<div id="bottom_container">
 		<ul id="input">
