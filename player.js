@@ -107,6 +107,11 @@ function draw(ce, c) {
 		c.arc(pos.x, pos.y, 30, 0, 2 * Math.PI, false);
 		c.fill();
 		c.stroke();
+
+		c.fillStyle = "black";
+		c.textAlign = "center";
+		c.textBaseline = "middle";
+		c.fillText(id, pos.x, pos.y);
 	}
 
 	function drawArcsFromState(state, pos) {
