@@ -18,6 +18,36 @@
 			right: 0;
 			bottom: 0;
 		}
+
+		#input, #input li {
+			list-style: 0;
+			margin: 0;
+		}
+
+		#bottom_container {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			text-align: center;
+		}
+
+		#input {
+			margin: auto;
+			padding: 0 0 10px 0;
+			display: inline-block;
+		}
+
+		#input li {
+			display: inline-block;
+			padding: 10px;
+			font-size: 180%;
+			color: white;
+		}
+
+		#input .done {
+			color: #666;
+		}
 	</style>
 	<script src="libs/jQuery.min.js"></script>
 	<script src="libs/sh5cf.js"></script>
@@ -27,5 +57,10 @@
 </head>
 <body>
 	<canvas id="canvas"></canvas>
+	<div id="bottom_container">
+		<ul id="input">
+			<li>Loading...</li>
+		</ul>
+	</div>
 </body>
 </html>

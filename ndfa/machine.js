@@ -9,6 +9,17 @@ function State(id, arcs)
 	this.accept = false;
 }
 
+State.prototype.isConnectedTo = function(other) {
+	for (var key in this.arcs) {
+		if (this.arcs.hasOwnProperty(key)) {
+			if (this.arcs[key].indexOf(other) >= 0) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 function Machine(alpha, type)
 {
 	this.initial = 0;
@@ -19,6 +30,19 @@ function Machine(alpha, type)
 
 Machine.prototype.isInAlpha = function(alpha) {
 	return this.alpha[alpha];
+}
+
+Machine.prototype.getIdFromState = function(key2find) {
+	var i = 0;
+	for (var key in game.m.states) {
+		if (game.m.states.hasOwnProperty(key)) {
+			if (key == key2find) {
+				return i;
+			}
+			i++;
+		}
+	}
+	return -1;
 }
 
 Machine.prototype.connect = function(from, to, alpha) {
