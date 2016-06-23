@@ -62,5 +62,9 @@ Vector.prototype.mul = function(other) {
 
 Vector.prototype.direction = function(to) {
 	// console.log("dir " + this.toString() + " to " + to.toString());
-	return (new Vector(to)).sub(this).nor();
+	return to.copy().sub(this).nor();
+};
+
+Vector.prototype.perp = function() {
+	return new Vector(-this.y, this.x);
 };

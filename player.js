@@ -1,5 +1,5 @@
 game = {}
-var STATE_RADIUS = 30;
+var STATE_RADIUS = 40;
 
 
 function init() {
@@ -24,7 +24,10 @@ function init() {
 		throw("Invalid DFA!");
 	}
 
-	engine.c.font = "12px Arial";
+	var c = engine.c;
+	c.textAlign = "center";
+	c.textBaseline = "middle";
+	c.font = "12px Arial";
 }
 
 function start() {
@@ -68,30 +71,31 @@ function len(dict) {
 	return count;
 }
 
-function idToPosition(i, num_states, mid, dist) {
+function idToPosition(i, num_states, screen_mid, state_dist_from_origin) {
 	var ang = 2 * 3.1415 * i / num_states + 3.1415;
-	var res = new Vector(mid);
-	res.x += Math.cos(ang) * dist;
-	res.y += Math.sin(ang) * dist;
+	var res = new Vector(screen_mid);
+	res.x += Math.cos(ang) * state_dist_from_origin;
+	res.y += Math.sin(ang) * state_dist_from_origin;
 	return res;
 }
 
 function draw(ce, c) {
-	const mid = {
+	const screen_mid = {
 		x: ce.width / 2,
 		y: ce.height / 2
 	};
 
-	var dist = mid.y;
-	if (mid.x < dist)
-		dist = mid.x;
-	dist = 0.75 * dist;
+	var state_dist_from_origin = screen_mid.y;
+	if (screen_mid.x < state_dist_from_origin) {
+		state_dist_from_origin = screen_mid.x;
+	}
+	state_dist_from_origin = 0.75 * state_dist_from_origin;
 
 	function drawState(id, pos, accept) {
 		c.strokeStyle = "#CCC";
 		if (accept) {
 			c.beginPath();
-			c.arc(pos.x, pos.y, 40, 0, 2 * Math.PI, false);
+			c.arc(pos.x, pos.y, STATE_RADIUS, 0, 2 * Math.PI, false);
 			c.stroke();
 		}
 		if (game.s.states.indexOf(id) >= 0) {
@@ -104,13 +108,11 @@ function draw(ce, c) {
 			c.fillStyle = "#666";
 		}
 		c.beginPath();
-		c.arc(pos.x, pos.y, STATE_RADIUS, 0, 2 * Math.PI, false);
+		c.arc(pos.x, pos.y, STATE_RADIUS - 10, 0, 2 * Math.PI, false);
 		c.fill();
 		c.stroke();
 
 		c.fillStyle = "black";
-		c.textAlign = "center";
-		c.textBaseline = "middle";
 		c.fillText(id, pos.x, pos.y);
 	}
 
@@ -121,8 +123,6 @@ function draw(ce, c) {
 			h = 20;
 			c.fillRect(midpoint.x - w/2, midpoint.y - h/2, w, h);
 			c.fillStyle = "black";
-			c.textAlign = "center";
-			c.textBaseline = "middle";
 			c.fillText(arc, midpoint.x, midpoint.y);
 		}
 		for (var arc in state.arcs) {
@@ -130,9 +130,10 @@ function draw(ce, c) {
 				for (var j = 0; j < state.arcs[arc].length; j++) {
 					var to = state.arcs[arc][j];
 					var to_id = game.m.getIdFromState(to); // target state id
-					var to_pos = idToPosition(to_id, num_states, mid, dist); // other state pos
+					var to_pos = idToPosition(to_id, num_states, screen_mid, state_dist_from_origin); // other state pos
 
 					// Only curve if there are returning arcs
+					var loop_back = (to_id == state.id);
 					var do_curve = game.m.states[String(to)].isConnectedTo(state.id);
 
 					// Normalised direction
@@ -141,11 +142,16 @@ function draw(ce, c) {
 					// Draw line (and find midpoint of line)
 					c.beginPath();
 					var midpoint = null;
+					var endpoint = to_pos;
 					c.moveTo(pos.x, pos.y);
-					if (do_curve) {
-						var perp = dir.copy().mul(100);
-						perp.x *= -1;
-
+					if (loop_back) {
+						midpoint = pos.copy().add(new Vector(0, 3*STATE_RADIUS));
+						c.moveTo(pos.x - STATE_RADIUS*0.5, pos.y);
+						c.lineTo(midpoint.x, midpoint.y);
+						endpoint = new Vector(pos.x + STATE_RADIUS*0.5, pos.y);
+						c.lineTo(endpoint.x, endpoint.y);
+					} else if (do_curve) {
+						var perp = dir.perp().mul(100);
 						midpoint = to_pos.copy().add(pos).mul(0.5).add(perp);
 
 						//c.lineTo(midpoint.x, midpoint.y);
@@ -156,6 +162,21 @@ function draw(ce, c) {
 						c.lineTo(to_pos.x, to_pos.y);
 					}
 					c.stroke();
+
+					// Arrow tip
+					var dir_midpoint = endpoint.direction(midpoint);
+					var arrow_perp = dir_midpoint.perp().mul(10);
+					var tip = dir_midpoint.copy().mul(STATE_RADIUS + 10).add(endpoint);
+					var tail = dir_midpoint.copy().mul(STATE_RADIUS * 1.5 + 10).add(endpoint);
+					var left = tail.copy().add(arrow_perp);
+					var right = tail.copy().sub(arrow_perp);
+					c.beginPath();
+					c.moveTo(tip.x, tip.y);
+					c.lineTo(left.x, left.y);
+					c.lineTo(right.x, right.y);
+					c.lineTo(tip.x, tip.y);
+					c.fillStyle = "white";
+					c.fill();
 
 					// Draw arc label
 					drawLabel(midpoint, arc);
@@ -168,14 +189,14 @@ function draw(ce, c) {
 	var i = 0;
 	for (var key in game.m.states) {
 		if (game.m.states.hasOwnProperty(key)) {
-			var pos = idToPosition(i, num_states, mid, dist);
+			var pos = idToPosition(i, num_states, screen_mid, state_dist_from_origin);
 			var state = game.m.states[key];
 			drawArcsFromState(state, pos);
 			i++;
 		}
 	}
 
-	var start = idToPosition(game.m.getIdFromState(game.m.initial), num_states, mid, dist);
+	var start = idToPosition(game.m.getIdFromState(game.m.initial), num_states, screen_mid, state_dist_from_origin);
 	c.beginPath();
 	c.strokeStyle = "#ccc";
 	c.moveTo(start.x - 100, start.y);
@@ -185,7 +206,7 @@ function draw(ce, c) {
 	i = 0;
 	for (var key in game.m.states) {
 		if (game.m.states.hasOwnProperty(key)) {
-			var pos = idToPosition(i, num_states, mid, dist);
+			var pos = idToPosition(i, num_states, screen_mid, state_dist_from_origin);
 			var state = game.m.states[key];
 			drawState(key, pos, state.accept);
 			i++;
