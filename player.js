@@ -1,4 +1,5 @@
 game = {}
+var STATE_RADIUS = 30;
 
 
 function init() {
@@ -69,9 +70,10 @@ function len(dict) {
 
 function idToPosition(i, num_states, mid, dist) {
 	var ang = 2 * 3.1415 * i / num_states + 3.1415;
-	var x = mid.x + Math.cos(ang) * dist;
-	var y = mid.y + Math.sin(ang) * dist;
-	return {x: x, y: y};
+	var res = new Vector(mid);
+	res.x += Math.cos(ang) * dist;
+	res.y += Math.sin(ang) * dist;
+	return res;
 }
 
 function draw(ce, c) {
@@ -102,7 +104,7 @@ function draw(ce, c) {
 			c.fillStyle = "#666";
 		}
 		c.beginPath();
-		c.arc(pos.x, pos.y, 30, 0, 2 * Math.PI, false);
+		c.arc(pos.x, pos.y, STATE_RADIUS, 0, 2 * Math.PI, false);
 		c.fill();
 		c.stroke();
 
@@ -127,48 +129,40 @@ function draw(ce, c) {
 			if (state.arcs.hasOwnProperty(arc)) {
 				for (var j = 0; j < state.arcs[arc].length; j++) {
 					var to = state.arcs[arc][j];
-					var id = game.m.getIdFromState(to);
-					var pos2 = idToPosition(id, num_states, mid, dist);
+					var to_id = game.m.getIdFromState(to); // target state id
+					var to_pos = idToPosition(to_id, num_states, mid, dist); // other state pos
+
+					// Only curve if there are returning arcs
 					var do_curve = game.m.states[String(to)].isConnectedTo(state.id);
 
+					// Normalised direction
+					var dir = pos.direction(to_pos);
+
+					// Draw line (and find midpoint of line)
 					c.beginPath();
-					c.moveTo(pos.x, pos.y);
 					var midpoint = null;
+					c.moveTo(pos.x, pos.y);
 					if (do_curve) {
-						var dir = {
-							x: pos2.x - pos.x,
-							y: pos2.y - pos.y
-						};
-						var mag = Math.sqrt(dir.x*dir.x + dir.y*dir.y);
-						dir.x *= 100 / mag;
-						dir.y *= 100 / mag;
+						var perp = dir.copy().mul(100);
+						perp.x *= -1;
 
-						var perp = {
-							x: -dir.y,
-							y: dir.x
-						};
-
-						midpoint = {
-							x: (pos2.x + pos.x) / 2 + perp.x,
-							y: (pos2.y + pos.y) / 2 + perp.y
-						};
+						midpoint = to_pos.copy().add(pos).mul(0.5).add(perp);
 
 						//c.lineTo(midpoint.x, midpoint.y);
-						//c.lineTo(pos2.x, pos2.y);
-						c.quadraticCurveTo(midpoint.x, midpoint.y, pos2.x, pos2.y);
+						//c.lineTo(to_pos.x, to_pos.y);
+						c.quadraticCurveTo(midpoint.x, midpoint.y, to_pos.x, to_pos.y);
 					} else {
-						midpoint = {
-							x: (pos2.x + pos.x) / 2,
-							y: (pos2.y + pos.y) / 2
-						};
-						c.lineTo(pos2.x, pos2.y);
+						midpoint = to_pos.copy().add(pos).mul(0.5);
+						c.lineTo(to_pos.x, to_pos.y);
 					}
 					c.stroke();
+
+					// Draw arc label
 					drawLabel(midpoint, arc);
-				}
-			}
-		}
-	}
+				} // end for each arc in arcs
+			} // end if has own property
+		} //end for arcs in state.arcs
+	} // end drawArcsFromState()
 
 	var num_states = len(game.m.states);
 	var i = 0;
