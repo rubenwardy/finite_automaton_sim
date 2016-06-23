@@ -5,7 +5,7 @@ var STATE_RADIUS = 40;
 function init() {
 	console.log("[Player] Init!");
 
-	game.input = ['a', 'b', 'a', 'a', 'a', 'b', 'a', 'a'];
+	game.input = ['a', 'b', 'a', 'a', 'a', 'b', 'a'];
 	game.title = "DFA to accept strings ending in aa";
 	game.m = new Machine({a: true, b: true});
 	game.m.connect(0, 1, "a");
@@ -170,8 +170,12 @@ function draw(ce, c) {
 			c.stroke();
 		}
 		if (game.s.states.indexOf(id) >= 0) {
-			if (game.input.length == 0 && game.m.isAccept(game.m.states[id])) {
-				c.fillStyle = "#6F6";
+			if (game.input.length == 0) {
+				if (game.m.isAccept(game.m.states[id])) {
+					c.fillStyle = "#6F6";
+				} else {
+					c.fillStyle = "#F33";
+				}
 			} else {
 				c.fillStyle = "#66F";
 			}
