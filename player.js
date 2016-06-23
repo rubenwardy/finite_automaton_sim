@@ -28,13 +28,23 @@ function init() {
 	c.textAlign = "center";
 	c.textBaseline = "middle";
 	c.font = "12px Arial";
+
+	$("#simulator_start").click(function() {
+		game.input = $("#input_input").val().split("");
+		game.s = new Simulator(game.m);
+		start();
+	})
 }
 
 function start() {
 	$("#title").text(game.title);
 	var res = "";
-	for (var i = 0; i < game.input.length; i++) {
-		res += "<li>" + game.input[i] + "</li>";
+	if (game.input.length > 0) {
+		for (var i = 0; i < game.input.length; i++) {
+			res += "<li>" + game.input[i] + "</li>";
+		}
+	} else {
+		res += "<li class=\"done\">&epsilon;</li>";
 	}
 	$("#input").html(res);
 }
@@ -81,15 +91,15 @@ function idToPosition(i, num_states, screen_mid, state_dist_from_origin) {
 
 function draw(ce, c) {
 	const screen_mid = {
-		x: ce.width / 2,
-		y: ce.height / 2
+		x: ce.width / 2 - 200,
+		y: ce.height / 2 - 65
 	};
 
 	var state_dist_from_origin = screen_mid.y;
 	if (screen_mid.x < state_dist_from_origin) {
 		state_dist_from_origin = screen_mid.x;
 	}
-	state_dist_from_origin = 0.75 * state_dist_from_origin;
+	state_dist_from_origin = 0.8 * state_dist_from_origin;
 
 	function drawState(id, pos, accept) {
 		c.strokeStyle = "#CCC";

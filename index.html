@@ -28,7 +28,7 @@
 		#bottom_container {
 			position: fixed;
 			left: 0;
-			right: 0;
+			right: 330px;
 			bottom: 0;
 			text-align: center;
 		}
@@ -49,7 +49,7 @@
 			color: #666;
 		}
 
-		#title {
+		/*#title {
 			margin: 0;
 			padding: 0;
 			position: fixed;
@@ -59,6 +59,67 @@
 			text-align: center;
 			font-size: 150%;
 			display: block;
+		}*/
+
+		aside {
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			padding: 0;
+			margin: 0;
+			width: 330px;
+			background: #111;
+		}
+
+		aside h1, aside h2 {
+			margin: 10px 0 10px 15px;
+		}
+
+		dl dt, dl dd {
+			display: inline-block;
+		}
+
+		dl dt {
+			padding: 5px 5px 5px 15px;
+		}
+
+		dl dd {
+			margin: 0 0 0 10px;
+		}
+
+		table {
+			width: 90%;
+			margin: 5px 5px 5px 15px;
+		}
+		table, table tr, table td, table th {
+			border: 1px solid #666;
+		}
+
+		table td {
+			text-align: center;
+		}
+
+		input[type=text] {
+			background: #333;
+			border: 1px solid #666;
+			color: white;
+			padding: 4px 10px;
+			margin: 2px;
+			border-radius: 5px;
+		}
+
+		.input_state input {
+			max-width: 30px;
+		}
+
+		#error {
+			background: #e00;
+			padding: 10px;
+		}
+
+		aside > button {
+			margin: 5px 5px 5px 15px;
 		}
 	</style>
 	<script src="libs/jQuery.min.js"></script>
@@ -69,12 +130,73 @@
 	<script src="player.js"></script>
 </head>
 <body>
-	<h1 id="title">Loading...</h1>
 	<canvas id="canvas"></canvas>
 	<div id="bottom_container">
 		<ul id="input">
 			<li>Loading...</li>
 		</ul>
 	</div>
+
+	<aside>
+		<div id="error" style="display:none;">
+			Invalid DFA transition function. Every cell must be filled with a single valid state.
+		</div>
+
+		<h1 id="title"></h1>
+
+		<dl>
+			<dt>Alphabet</dt>
+			<dd><input type="text" id="input_alpha" value="ab"></dd>
+		</dl>
+
+		<h2>States</h2>
+
+		<dl>
+			<dt>States</dt>
+			<dd class="input_states"><input type="text" id="input_states" value="0,1,2"></dd><br>
+			<dt>Start</dt>
+			<dd class="input_state"><input type="text" id="input_start" value="0"></dd><br>
+			<dt>Accept</dt>
+			<dd class="input_states"><input type="text" id="input_accept" value="2"></dd>
+		</dl>
+
+		<h2>Transistion Function</h2>
+
+		<table>
+			<tr>
+				<th rowspan=2>q &in; Q</th>
+				<th colspan=2>&alpha; &in; &sum;</th>
+			</tr>
+			<tr>
+				<th>a</th>
+				<th>b</th>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td class="input_state"><input type="text" value="1"></td>
+				<td class="input_state"><input type="text" value="0"></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="input_state"><input type="text" value="2"></td>
+				<td class="input_state"><input type="text" value="0"></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="input_state"><input type="text" value="2"></td>
+				<td class="input_state"><input type="text" value="0"></td>
+			</tr>
+		</table>
+
+		<h2>Simulator</h2>
+
+		<dl>
+			<dt>Input</dt>
+			<dd>
+				<input type="text" id="input_input" value="abaaabaa">
+			</dd>
+		</dl>
+		<button id="simulator_start">Start</button>
+	</aside>
 </body>
 </html>
