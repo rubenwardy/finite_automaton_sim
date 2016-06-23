@@ -45,6 +45,15 @@ Machine.prototype.getIdFromState = function(key2find) {
 	return -1;
 }
 
+Machine.prototype.getOrMakeState = function(id) {
+	var state = this.states[id];
+	if (!state) {
+		state = new State(id, {});
+		this.states[id] = state;
+	}
+	return state;
+}
+
 Machine.prototype.connect = function(from, to, alpha) {
 	from = String(from);
 	to = String(to);
@@ -87,6 +96,18 @@ Machine.prototype.isAccept = function(state) {
 		return false;
 	}
 };
+
+Machine.prototype.getAccepts = function() {
+	var res = [];
+	for (var sid in this.states) {
+		if (!this.states.hasOwnProperty(sid)) continue;
+		var state = this.states[sid];
+		if (this.isAccept(state)) {
+			res.push(sid);
+		}
+	}
+	return res;
+}
 
 Machine.prototype.isValid = function() {
 	for (var sid in this.states) {

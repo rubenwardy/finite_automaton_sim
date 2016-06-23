@@ -33,7 +33,68 @@ function init() {
 		game.input = $("#input_input").val().split("");
 		game.s = new Simulator(game.m);
 		start();
-	})
+	});
+
+	$("#build").click(function() {
+		machineFromDOM();
+	});
+}
+
+function machineFromDOM()
+{
+	console.log("Building machine from DOM");
+	var alpha_str = $("#input_alpha").val();
+	var alpha = {};
+	for (var i = 0; i < alpha_str.length; i++) {
+		alpha[alpha_str[i]] = true;
+		console.log(" - alpha: " + alpha_str[i]);
+	}
+	var m = new Machine(alpha);
+
+	var states = $("#input_states").val().split(",");
+
+	// var trans =
+	for (var i = 0; i < states.length; i++) {
+		var sid = states[i];
+		if (sid.trim() != "") {
+			var row_i = i + 2;
+			var row_e = $($("table tr")[row_i]);
+			console.log(sid + " = " + row_e.html());
+			console.log(" - state: " + sid);
+			m.getOrMakeState(sid);
+			var inputs = row_e.find("input");
+			for (var j = 0; j < alpha_str.length; j++) {
+				var a = alpha_str[j];
+				var input = $(inputs[j]);
+				var to_id = input.val();
+				if (to_id.trim() != "") {
+					console.log(" - " + a + " = " + to_id);
+					m.connect(sid, to_id, a);
+				}
+			}
+		}
+	}
+
+	var accepts = $("#input_accepts").val().split(",");
+	for (var i = 0; i < accepts.length; i++) {
+		var sid = accepts[i];
+		if (sid.trim() != "") {
+			console.log(" - accept: " + sid);
+			m.makeAccept(sid);
+		}
+	}
+
+	if (m.isValid()) {
+		console.log(" - is valid!");
+		game.m = m;
+		game.s = new Simulator(game.m);
+		start();
+	} else {
+		var err = $("#error");
+		err.text("Invalid DFA transition function. Every cell must be filled with a single valid state.");
+		err.show();
+	}
+
 }
 
 function start() {
