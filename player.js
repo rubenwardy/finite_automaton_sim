@@ -5,7 +5,7 @@ var STATE_RADIUS = 40;
 function init() {
 	console.log("[Player] Init!");
 
-	game.input = ['a', 'b', 'a', 'a', 'a', 'b', 'a'];
+	game.input = ['a', 'b', 'a', 'a', 'a', 'b', 'a', 'a'];
 	game.title = "DFA to accept strings ending in aa";
 	game.m = new Machine({a: true, b: true});
 	game.m.connect(0, 1, "a");
@@ -49,7 +49,11 @@ function machineFromDOM()
 		alpha[alpha_str[i]] = true;
 		console.log(" - alpha: " + alpha_str[i]);
 	}
-	var m = new Machine(alpha);
+
+	var machine_type = $("#input_type").val();
+	console.log(" - type: " + machine_type);
+
+	var m = new Machine(alpha, (machine_type=="nfa")?2:1);
 
 	var states = $("#input_states").val().split(",");
 
