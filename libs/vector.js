@@ -66,5 +66,5 @@ Vector.prototype.direction = function(to) {
 };
 
 Vector.prototype.perp = function() {
-	return new Vector(-this.y, this.x);
+	return new Vector(this.y, -this.x);
 };
