@@ -70,10 +70,19 @@ function machineFromDOM()
 			for (var j = 0; j < alpha_str.length; j++) {
 				var a = alpha_str[j];
 				var input = $(inputs[j]);
-				var to_id = input.val();
-				if (to_id.trim() != "") {
-					console.log(" - " + a + " = " + to_id);
-					m.connect(sid, to_id, a);
+				var to_ids = input.val().split(",");
+				for (var k = 0; k < to_ids.length; k++) {
+					var to_id = to_ids[k];
+					if (to_id.trim() != "") {
+						console.log(" - " + a + " = " + to_id);
+						try {
+							m.connect(sid, to_id, a);
+						} catch (e) {
+							var err = $("#error");
+							err.text(e.message);
+							err.show();
+						}
+					}
 				}
 			}
 		}
