@@ -112,6 +112,6 @@ input[type=text] {
 	padding: 10px;
 }
 
-aside > button {
+aside > button, aside > i {
 	margin: 5px 5px 5px 15px;
 }
