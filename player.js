@@ -35,12 +35,67 @@ function init() {
 		start();
 	});
 
-	$("#build").click(function() {
-		machineFromDOM();
-	});
+	$(".trigger_update_states > input").keyup(updateStates);
+	$("#build").click(buildMachineFromDOM);
 }
 
-function machineFromDOM()
+function updateStates()
+{
+	var states = $("#input_states").val().split(",");
+	for (var i = 0; i < states.length; i++) {
+		var sid = (states[i] || "").trim();
+		states[i] = sid;
+		if (sid != "") {
+			game.m.getOrMakeState(sid);
+		}
+	}
+	game.m.makeValid();
+
+	if (game.m.isValid()) {
+		console.log(" - is valid!");
+		game.s = new Simulator(game.m);
+		start();
+		buildTransistionTable();
+	} else {
+		var err = $("#error");
+		err.text("Invalid DFA transition function. Every cell must be filled with a single valid state.");
+		err.show();
+	}
+}
+
+function buildTransistionTable()
+{
+	var res = "<tr>\n";
+	res += "\t<th rowspan=2>q &in; Q</th>\n";
+	res += "\t<th colspan=2>&alpha; &in; &sum;</th>\n";
+	res += "</tr>\n";
+	res += "<tr>\n";
+
+	for (var a in game.m.alpha) {
+		if (game.m.alpha.hasOwnProperty(a)) {
+			res += "<td>" + a + "</td>";
+		}
+	}
+	res += "</tr>\n";
+
+	for (var sid in game.m.states) {
+		if (game.m.states.hasOwnProperty(sid)) {
+			res += "<tr><td>" + sid + "</td>";
+			var state = game.m.states[sid];
+			for (var a in game.m.alpha) {
+				if (game.m.alpha.hasOwnProperty(a)) {
+					var states = state.arcs[a] || [];
+					res += "<td class=\"input_state\"><input type=\"text\" value=\"" + states.join(",") + "\"></td>";
+				}
+			}
+			res += "</tr>";
+		}
+	}
+
+	$("aside > table").html(res);
+}
+
+function buildMachineFromDOM()
 {
 	console.log("Building machine from DOM");
 	var alpha_str = $("#input_alpha").val();
@@ -52,40 +107,40 @@ function machineFromDOM()
 
 	var machine_type = $("#input_type").val();
 	console.log(" - type: " + machine_type);
-
 	var m = new Machine(alpha, (machine_type=="nfa")?2:1);
 
-	var states = $("#input_states").val().split(",");
-
 	// var trans =
-	for (var i = 0; i < states.length; i++) {
-		var sid = states[i];
-		if (sid.trim() != "") {
-			var row_i = i + 2;
-			var row_e = $($("table tr")[row_i]);
-			console.log(sid + " = " + row_e.html());
-			console.log(" - state: " + sid);
-			m.getOrMakeState(sid);
-			var inputs = row_e.find("input");
-			for (var j = 0; j < alpha_str.length; j++) {
-				var a = alpha_str[j];
-				var input = $(inputs[j]);
-				var to_ids = input.val().split(",");
-				for (var k = 0; k < to_ids.length; k++) {
-					var to_id = to_ids[k];
-					if (to_id.trim() != "") {
-						console.log(" - " + a + " = " + to_id);
-						try {
-							m.connect(sid, to_id, a);
-						} catch (e) {
-							var err = $("#error");
-							err.text(e.message);
-							err.show();
-						}
+	var i = 0;
+	for (var sid in game.m.states) {
+		if (!game.m.states.hasOwnProperty(sid)) {
+			continue;
+		}
+
+		var row_i = i + 2;
+		var row_e = $($("table tr")[row_i]);
+		console.log(sid + " = " + row_e.html());
+		console.log(" - state: " + sid);
+		m.getOrMakeState(sid);
+		var inputs = row_e.find("input");
+		for (var j = 0; j < alpha_str.length; j++) {
+			var a = alpha_str[j];
+			var input = $(inputs[j]);
+			var to_ids = input.val().split(",");
+			for (var k = 0; k < to_ids.length; k++) {
+				var to_id = to_ids[k];
+				if (to_id.trim() != "") {
+					console.log(" - " + a + " = " + to_id);
+					try {
+						m.connect(sid, to_id, a);
+					} catch (e) {
+						var err = $("#error");
+						err.text(e.message);
+						err.show();
 					}
 				}
 			}
 		}
+		i++;
 	}
 
 	var accepts = $("#input_accepts").val().split(",");

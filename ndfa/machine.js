@@ -174,4 +174,42 @@ Machine.prototype.delta = function(state, alpha) {
 	}
 };
 
+Machine.prototype.makeValid = function() {
+	for (var sid in this.states) {
+		if (this.states.hasOwnProperty(sid)) {
+			var state = this.states[sid];
+
+			// Check for deleted states and alphabet letters in trans func
+			for (var alpha in state.arcs) {
+				if (this.alpha[alpha]) {
+					var arc = state.arcs[alpha];
+					var new_arc = [];
+					for (var i = 0; i < arc.length; i++) {
+						var sid2 = arc[i];
+						if (this.states[sid2]) {
+							new_arc.push(sid2);
+						}
+					}
+					state.arcs[alpha] = new_arc;
+				} else {
+					delete state.arcs[alpha];
+				}
+			}
+
+			// Check for new alphabet letters or empty trans func cells
+			for (var alpha in this.alpha) {
+				var arc = state.arcs[alpha];
+				if (this.type == DFA) {
+					if (!arc || arc.length != 1) {
+						state.arcs[alpha] = [ sid ];
+					}
+				} else if (!arc) {
+					state.arcs[alpha] = [];
+				}
+			}
+
+		}
+	}
+}
+
 module.exports = Machine;
