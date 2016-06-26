@@ -27,6 +27,19 @@
 		<h1 id="title"></h1>
 
 		<dl>
+			<dt>Alphabet</dt>
+			<dd><input type="text" id="input_alpha" value="ab" readonly></dd><br>
+			<dt>States</dt>
+			<dd class="input_states trigger_update_states"><input type="text" id="input_states" value="0,1,2" readonly></dd><br>
+			<dt>Start</dt>
+			<dd class="input_state trigger_update_states"><input type="text" id="input_start" value="0" readonly></dd><br>
+			<dt>Accept</dt>
+			<dd class="input_states trigger_update_states"><input type="text" id="input_accepts" value="2" readonly></dd>
+		</dl>
+
+		<h2>Transistion Function</h2>
+
+		<dl>
 			<dt>Type</dt>
 			<dd>
 				<select id="input_type">
@@ -34,17 +47,7 @@
 					<option value="nfa">NFA</option>
 				</select>
 			</dd><br>
-			<dt>Alphabet</dt>
-			<dd><input type="text" id="input_alpha" value="ab"></dd><br>
-			<dt>States</dt>
-			<dd class="input_states trigger_update_states"><input type="text" id="input_states" value="0,1,2"></dd><br>
-			<dt>Start</dt>
-			<dd class="input_state trigger_update_states"><input type="text" id="input_start" value="0"></dd><br>
-			<dt>Accept</dt>
-			<dd class="input_states trigger_update_states"><input type="text" id="input_accepts" value="2"></dd>
 		</dl>
-
-		<h2>Transistion Function</h2>
 
 		<table>
 			<tr>
